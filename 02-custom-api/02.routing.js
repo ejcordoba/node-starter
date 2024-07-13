@@ -35,6 +35,11 @@ const processRequest = (req, res) => {
           });
           break;
         }
+
+        default:
+          res.statusCode = 404;
+          res.setHeader("Content-Type", "text/plain; charset=utf-8");
+          return res.end("404 Not Found");
       }
   }
 };
