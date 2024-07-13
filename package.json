@@ -23,5 +23,8 @@
   "homepage": "https://github.com/ejcordoba/node-starter#readme",
   "dependencies": {
     "picocolors": "1.0.1"
+  },
+  "devDependencies": {
+    "standard": "^17.1.0"
   }
 }
