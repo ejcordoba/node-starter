@@ -1,5 +1,6 @@
 const fs = require("node:fs/promises");
 const path = require("node:path");
+const pc = require("picocolors");
 
 const folder = process.argv[2] ?? "."; // Sabemos la posición del folder previamente
 
@@ -8,7 +9,7 @@ async function ls(folder) {
   try {
     files = await fs.readdir(folder);
   } catch {
-    console.error(`No se pudo leer el directorio: ${folder}`);
+    console.error(pc.red(`No se pudo leer el directorio: ${folder}`));
     process.exit(1); // Salimos correctamente del proceso
   }
   // Arriba hacemos asincronía secuencial, hasta no tener todos los archivos/subdir no seguimos
@@ -26,9 +27,10 @@ async function ls(folder) {
     const fileSize = stats.size;
     const fileModified = stats.mtime.toLocaleString();
 
-    return `${fileType} ${file.padEnd(30)} ${fileSize
+    return `${fileType} ${pc.blue(file.padEnd(30))} ${pc
+      .green(fileSize)
       .toString()
-      .padStart(10)} ${fileModified}`;
+      .padStart(10)} ${pc.yellow(fileModified)}`;
   });
 
   const filesInfo = await Promise.all(filesPromises);
