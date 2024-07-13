@@ -6,17 +6,14 @@ const PORT = process.env.PORT ?? 1234;
 const app = express();
 app.disable("x-powered-by");
 
-app.get("/", (req, res) => {
-  res.send("<h1>Mi página</h1>");
-});
+app.use(express.json());
+/* // Middleware
+app.use((req, res, next) => {
+  if (req.method !== "POST") return next();
+  if (req.headers["content-type"] !== "application/json") return next();
 
-app.get("/pokemon-data/ditto", (req, res) => {
-  res.json(dittoJSON);
-});
-
-app.post("/pokemon-data", (req, res) => {
+  // Solo llegan request que son POST y que tienen el header Content-Type: application/json
   let body = "";
-
   // escuchar el evento data
   req.on("data", (chunk) => {
     body += chunk.toString();
@@ -26,8 +23,23 @@ app.post("/pokemon-data", (req, res) => {
   req.on("end", () => {
     const data = JSON.parse(body);
     data.timestamp = Date.now();
-    res.status(201).json(data);
+    // Mutar la request y meter la información en el req.body
+    req.body = data;
+    next();
   });
+}); */
+
+app.get("/", (req, res) => {
+  res.send("<h1>Mi página</h1>");
+});
+
+app.get("/pokemon-data/ditto", (req, res) => {
+  res.json(dittoJSON);
+});
+
+app.post("/pokemon-data", (req, res) => {
+  // req.body debería ser guardado en bbdd
+  res.status(201).json(req.body);
 });
 
 // La última a la que va a llegar, no la definimos para el 404
