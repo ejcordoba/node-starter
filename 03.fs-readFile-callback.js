@@ -1,3 +1,4 @@
+// Asíncrono con callbacks
 const fs = require("node:fs");
 
 console.log("Reading first file ...");
