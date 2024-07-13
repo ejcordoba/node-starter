@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/ejcordoba/node-starter/issues"
   },
-  "homepage": "https://github.com/ejcordoba/node-starter#readme"
+  "homepage": "https://github.com/ejcordoba/node-starter#readme",
+  "dependencies": {
+    "picocolors": "1.0.1"
+  }
 }
