@@ -1,5 +1,8 @@
 const http = require("node:http");
 const { findAvailablePort } = require("./10.free-port");
+
+const desiredPort = process.env.SERVERPORT ?? 3000;
+//SERVERPORT=1234 node 09.http.js
 // El servidor, básicamente recibe una solicitud y devuelve una respuesta
 const server = http.createServer((req, res) => {
   console.log("Request retrieved"), res.end("Hello world!");
@@ -13,7 +16,7 @@ server.listen(0, () => {
 }); */
 // Usando nuestra app para encontrar puerto libre
 
-findAvailablePort(1234).then((port) => {
+findAvailablePort(desiredPort).then((port) => {
   server.listen(port, () => {
     console.log(`Server listening on port http://localhost:${port}`);
   });
