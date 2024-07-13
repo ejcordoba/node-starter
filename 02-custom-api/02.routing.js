@@ -17,7 +17,7 @@ const processRequest = (req, res) => {
       }
     case "POST":
       switch (url) {
-        case "/pokemon": {
+        case "/pokemon-data": {
           let body = "";
           // escuchar el evento data
           req.on("data", (chunk) => {
@@ -30,7 +30,10 @@ const processRequest = (req, res) => {
             res.writeHead(201, {
               "Content-Type": "application/json; charset=utf-8",
             });
+            data.timestamp = Date.now();
+            res.end(JSON.stringify(data));
           });
+          break;
         }
       }
   }
