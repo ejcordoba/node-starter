@@ -1,6 +1,7 @@
 const express = require("express");
 const crypto = require("node:crypto");
 const movies = require("./movies.json");
+const { validateMovie } = require("./schema/movie");
 
 const app = express();
 app.use(express.json()); // Middleware
@@ -29,17 +30,21 @@ app.get("/movies/:id", (req, res) => {
 });
 
 app.post("/movies", (req, res) => {
+  const result = validateMovie(req.body);
+
+  if (result.error) {
+    return res.status(400).json({ error: JSON.parse(result.error.message) });
+  }
+
   const { title, year, director, duration, poster, genre, rate } = req.body;
+
   const newMovie = {
     id: crypto.randomUUID(),
-    title,
-    year,
-    director,
-    duration,
-    poster,
-    genre,
-    rate: rate ?? 0,
+    ...result.data,
   };
+  // Podemos desestructurar sin temor a que se haya introducido un valor no deseado
+  // puesto que ya hemos hecho la validacion previamente y no va a entrar un valor que no tengamos controlado ya
+
   // Esto no sería REST, porque estamos guardando
   // el estado de la aplicación en memoria
   movies.push(newMovie);
