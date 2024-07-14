@@ -4,6 +4,7 @@ const movies = require("./movies.json");
 const { validateMovie, validatePartialMovie } = require("./schema/movie");
 
 const app = express();
+const ACCEPTED_ORIGINS = ["http://localhost:8080", "http://nicemovies.com"];
 app.use(express.json()); // Middleware
 app.disable("x-powered-by");
 
@@ -12,6 +13,13 @@ app.get("/", (req, res) => {
 });
 
 app.get("/movies", (req, res) => {
+  // Control de CORS
+  const origin = req.header("origin");
+  // Verificar también si la solicitud se hace desde el mismo origen
+  if (ACCEPTED_ORIGINS.includes(origin) || !origin) {
+    res.header("Access-Control-Allow-Origin", origin);
+  }
+
   const { genre } = req.query;
   if (genre) {
     const filteredMovies = movies.filter((movie) =>
@@ -73,8 +81,32 @@ app.patch("/movies/:id", (req, res) => {
   return res.json(updateMovie);
 });
 
+app.delete("/movies/:id", (req, res) => {
+  const origin = req.header("origin");
+  if (ACCEPTED_ORIGINS.includes(origin) || !origin) {
+    res.header("Access-Control-Allow-Origin", origin);
+  }
+  const { id } = req.params;
+  const movieIndex = movies.findIndex((movie) => movie.id === id);
+
+  if (movieIndex === -1) {
+    return res.status(404).json({ message: "Movie not found" });
+  }
+  movies.splice(movieIndex, 1);
+
+  return res.json({ message: "Movie deleted" });
+});
 const PORT = process.env.PORT ?? 1234;
 
+// Para los métodos mas complejos necesitamos controlar el CORS Pre-Flight
+app.options("/movies/:id", (req, res) => {
+  const origin = req.header("origin");
+  if (ACCEPTED_ORIGINS.includes(origin) || !origin) {
+    res.header("Access-Control-Allow-Origin", origin);
+    res.header("Access-Control-Allow-Methods", "GET,POST,PATCH,DELETE");
+  }
+  res.sendStatus(200);
+});
 app.listen(PORT, () => {
   console.log(`Server listenting on port http://localhost:${PORT}`);
 });
