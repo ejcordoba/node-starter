@@ -16,6 +16,7 @@ const movieSchema = z.object({
       "Action",
       "Adventura",
       "Comedy",
+      "Crime",
       "Drama",
       "Fantasy",
       "Horror",
@@ -27,7 +28,7 @@ const movieSchema = z.object({
       invalid_type_error: "Movie genre must be an array of enum Genres",
     }
   ),
-  rate: z.number().min(0).max(10),
+  rate: z.number().min(0).max(10).default(5), // Por defecto para definir opcional, se puede usar otra manera
 });
 
 function validateMovie(object) {
@@ -35,6 +36,11 @@ function validateMovie(object) {
 } // safeParse devuelve un objecto resolve con error o datos, mejor para gestionar con condicional
 // Con safeParseAsync evitariamos bloqueos en el proceso.
 
+function validatePartialMovie(object) {
+  return movieSchema.partial().safeParse(object);
+}
+
 module.exports = {
   validateMovie,
+  validatePartialMovie,
 };
